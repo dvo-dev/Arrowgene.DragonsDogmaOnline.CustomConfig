@@ -433,7 +433,7 @@ namespace Arrowgene.Ddon.GameServer.Characters
                 rankUpNtc.CraftRank = leadPawn.CraftData.CraftRank;
                 rankUpNtc.TotalCraftPoint = leadPawn.CraftData.CraftPoint;
                 
-                leadPawn.CraftData.CraftExp = Math.Clamp(leadPawn.CraftData.CraftExp, 0, craftRankExpLimit[(int)leadPawn.CraftData.CraftRankLimit-1]);
+                leadPawn.CraftData.CraftExp = Math.Clamp(leadPawn.CraftData.CraftExp, 0, craftRankExpLimit[Math.Min((int)leadPawn.CraftData.CraftRankLimit-1, craftRankExpLimit.Count - 1)]);
             }
 
             return rankUpNtc;

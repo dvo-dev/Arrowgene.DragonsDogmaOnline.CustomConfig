@@ -15,9 +15,6 @@ namespace Arrowgene.Ddon.GameServer.Handler
         {
         }
 
-        // TODO: Figure out what the updateTypes actually are.
-        public static readonly uint UNK_TYPE_GG_PRICE = 0;
-
         public override S2CCharacterEditGetShopPriceRes Handle(GameClient client, C2SCharacterEditGetShopPriceReq request)
         {
             S2CCharacterEditGetShopPriceRes res = new S2CCharacterEditGetShopPriceRes();
@@ -54,13 +51,13 @@ namespace Arrowgene.Ddon.GameServer.Handler
 
             res.PriceInfo.Add(new CDataCharacterEditPriceInfo()
             {
-                UpdateType = 3, //Unknown Reincarnation (gender change?)
+                UpdateType = 3, // Pawn Beauty Parlor
                 Prices = new List<CDataWalletPoint>()
                 {
                     new()
                     {
                         Type = WalletType.GoldenGemstones,
-                        Value = UNK_TYPE_GG_PRICE,
+                        Value = Server.GameSettings.GameServerSettings.BeautyParlorGGPrice,
                     },
                 }
             });
@@ -80,7 +77,7 @@ namespace Arrowgene.Ddon.GameServer.Handler
                     if (priceType == WalletType.GoldenGemstones && value == server.GameSettings.GameServerSettings.ReincarnationGGPrice) return;
                     throw new ResponseErrorException(ErrorCode.ERROR_CODE_SHOP_PRICE_NO_MATCH);
                 case 3:
-                    if (priceType == WalletType.GoldenGemstones && value == UNK_TYPE_GG_PRICE) return;
+                    if (priceType == WalletType.GoldenGemstones && value == server.GameSettings.GameServerSettings.BeautyParlorGGPrice) return;
                     throw new ResponseErrorException(ErrorCode.ERROR_CODE_SHOP_PRICE_NO_MATCH);
                 default:
                     throw new ResponseErrorException(ErrorCode.ERROR_CODE_SHOP_PRICE_NO_MATCH);
