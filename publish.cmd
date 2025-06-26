@@ -2,8 +2,19 @@
 SET /p VERSION=<ddon.version
 SET RUNTIMES=win-x64
 SET ZIP="C:\Program Files\7-Zip\7z.exe"
+
+REM Create backup directory if it doesn't exist
+if not exist .\backup mkdir .\backup
+
+REM Backup existing SQLite database if it exists
+if exist .\publish\win-x64-%VERSION%\Server\Files\Database\db.sqlite (
+    echo Backing up existing database...
+    copy .\publish\win-x64-%VERSION%\Server\Files\Database\db.sqlite .\backup\db.sqlite.backup.%date:~-4,4%%date:~-10,2%%date:~-7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+    echo Database backup created in .\backup\
+)
+
 mkdir .\release
-(for %%x in (%RUNTIMES%) do ( 
+(for %%x in (%RUNTIMES%) do (
 REM Clean
 if exist .\publish\%%x-%VERSION%\ RMDIR /S /Q .\publish\%%x-%VERSION%\
 REM Server
