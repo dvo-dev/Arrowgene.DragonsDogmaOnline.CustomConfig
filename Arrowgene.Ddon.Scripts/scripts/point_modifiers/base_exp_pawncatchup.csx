@@ -42,7 +42,7 @@ public class PointModifier : IPointModifier
             return 1.0;
         }
 
-        return LibDdon.GetSetting<double>("PointModifierSettings", "PawnCatchupMultiplier");
+        return 1.2 * LibDdon.GetSetting<double>("PointModifierSettings", "PawnCatchupMultiplier");
     }
 }
 

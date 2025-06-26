@@ -13,7 +13,7 @@ public class PointModifier : IPointModifier
             return 0.0;
         }
 
-        return LibDdon.GetSetting<double>("GameServerSettings", "JpModifier");
+        return 1.2 * LibDdon.GetSetting<double>("GameServerSettings", "JpModifier");
     }
 }
 
