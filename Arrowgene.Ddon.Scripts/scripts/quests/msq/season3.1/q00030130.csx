@@ -26,11 +26,7 @@ public class ScriptedQuest : IQuest
         public const uint LookoutCastleGuardTroop0 = 1774; // Lookout Castle Guard Troop
         public const uint LookoutCastleGuardTroop1 = 1775; // Lookout Castle Guard Troop
 
-
-        public const uint WarMasterUnit = 2516; // War Master Unit
-        public const uint WarMasterPet = 2517; // War Master's Pet
-        public const uint WarMaster = 2518; // War Master
-
+        public const uint NecroMaster = 1772; // Necro Master
         public const uint NecroFollower = 1773; // Necro Follower
     }
 
@@ -138,8 +134,8 @@ public class ScriptedQuest : IQuest
 
         AddEnemies(EnemyGroupId.Encounter + 3, Stage.LookoutCastle0, 1, QuestEnemyPlacementType.Manual, new()
         {
-            LibDdon.Enemy.CreateAuto(EnemyId.WarMaster0, 88, 0, isBoss: true)
-                .SetNamedEnemyParams(NamedParamId.WarMaster),
+            LibDdon.Enemy.CreateAuto(EnemyId.NecroMaster, 88, 0, isBoss: true)
+                .SetNamedEnemyParams(NamedParamId.NecroMaster),
         });
 
         AddEnemies(EnemyGroupId.Encounter + 4, Stage.LookoutCastle0, 6, QuestEnemyPlacementType.Manual, new()
