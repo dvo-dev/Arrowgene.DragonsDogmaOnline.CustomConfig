@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -167,10 +168,10 @@ namespace Arrowgene.Ddon.Shared.Scripting
             return false;
         }
 
-        protected void CompileScripts()
+        protected virtual void CompileScripts(List<ScriptModule> modules = null)
         {
-            Dictionary<string, ScriptModule>.ValueCollection scriptModulesValues = ScriptModules.Values;
-            Parallel.ForEach(scriptModulesValues, module =>
+            var scriptModules = modules ?? ScriptModules.Values.ToList();
+            Parallel.ForEach(scriptModules, module =>
             {
                 var path = Path.Combine(ScriptsRoot, module.ModuleRoot);
                 if (!module.IsEnabled)

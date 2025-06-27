@@ -1,6 +1,7 @@
 using Arrowgene.Ddon.Server;
 using Arrowgene.Ddon.Shared.Scripting;
 using Arrowgene.Logging;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Arrowgene.Ddon.GameServer.Scripting
@@ -53,19 +54,26 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             AddModule(JobEmblemStatModule);
             AddModule(SpecialSkillAugmentationModule);
             AddModule(JobOrbSpecialConditionModule);
-
-            // World Manage Quests have some dependency on Caution Spots, so load caution spots first
-            // to prevent unecssary quest relod on server load
             AddModule(MonsterCautionSpotModule);
-            AddModule(QuestModule);
-
-            // This module should run last since it applies fine grained modifications to other modules
-            AddModule(AddendumModule);
         }
 
         public override void Initialize()
         {
             base.Initialize(Globals);
+        }
+
+        protected override void CompileScripts(List<ScriptModule> modules = null)
+        {
+            base.CompileScripts(modules);
+
+            // World Manage Quests have a dependency on Caution Spots, so load quests after
+            // caution spots
+            base.CompileScripts([QuestModule]);
+            AddModule(QuestModule);
+
+            // This module should run last since it applies fine grained modifications to other modules
+            base.CompileScripts([AddendumModule]);
+            AddModule(AddendumModule);
         }
 
         protected override void OnChanged(object sender, FileSystemEventArgs e)
