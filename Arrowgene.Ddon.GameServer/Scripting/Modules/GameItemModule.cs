@@ -1,6 +1,5 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
 using Arrowgene.Ddon.Shared.Model;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 
 namespace Arrowgene.Ddon.GameServer.Scripting
@@ -43,14 +42,14 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             Items = new Dictionary<ItemId, IGameItem>();
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
                 return false;
             }
 
-            IGameItem item = (IGameItem)result.ReturnValue;
+            IGameItem item = (IGameItem)result;
             Items[item.ItemId] = item;
 
             return true;

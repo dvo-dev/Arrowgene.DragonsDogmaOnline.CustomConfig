@@ -7,6 +7,10 @@ terminate once reaching the root.
 
 Each directory inside scripts defines the scripting module. A module name should be all lowercase. Inside each module, there should be a `README.md` file which describes the purpose and usage of the module. It should also describe any guidelines required. When implementing a module, be aware if you want the module to be hotloadable. If you do, make sure to program in such a way that the settings can reflect as such after an update.
 
+> [!NOTE]
+> To improve startup times, scripts will be cached and restored from their pre-compiled DLLs if the source has not changed since they were last loaded. To prevent this, declare a variable named `PREVENT_SCRIPT_CACHE` (of any type and value).
+> You can reset the cache and force recompilation for all scripts by deleting `Files\script_assemblies\hashes.csv`.
+
 ## Setting up code completion
 
 Next section describes how to configure code completion for your scripts.

@@ -80,7 +80,7 @@ namespace Arrowgene.Ddon.Server.Scripting.modules
                 .AddImports("Arrowgene.Ddon.Shared.Model.Quest");
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (path.Contains(TemplatesDirectory))
             {
@@ -89,9 +89,9 @@ namespace Arrowgene.Ddon.Server.Scripting.modules
 
             var scriptName = Path.GetFileNameWithoutExtension(path);
 
-            foreach (var variable in result.Variables)
+            foreach (var (name, value) in variables)
             {
-                SettingsData.Set(scriptName, variable.Name, variable.Value);
+                SettingsData.Set(scriptName, name, value);
             }
 
             return true;

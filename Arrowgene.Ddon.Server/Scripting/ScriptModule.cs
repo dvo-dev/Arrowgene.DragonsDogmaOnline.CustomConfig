@@ -51,7 +51,8 @@ namespace Arrowgene.Ddon.GameServer.Scripting
         /// </summary>
         /// <param name="path">Path to the script that was executed</param>
         /// <param name="result">The result object of the script that executed</param>
+        /// <param name="variables">The local variables of the script that executed</param>
         /// <returns></returns>
-        public abstract bool EvaluateResult(string path, ScriptState<object> result);
+        public abstract bool EvaluateResult(string path, object result, IDictionary<string, object> variables);
     }
 }

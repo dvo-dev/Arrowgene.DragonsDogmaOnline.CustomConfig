@@ -110,7 +110,7 @@ public class ScriptedQuest : IQuest
             .AddQuestFlag(QuestFlagAction.Clear, QuestFlags.RoyalFamilysSecretPath.LookoutCastleDoor1)
             .AddQuestFlag(QuestFlagAction.Set, QuestFlags.RoyalFamilysSecretPath.LookoutCastleDoor0)
             .AddQuestFlag(QuestFlagAction.Clear, QuestFlags.AudienceChamber.TheCrewEndSeason34);
-        process0.AddNewTalkToNpcBlock(QuestAnnounceType.Accept, Stage.FortThines1, 2, 0, NpcId.Nedo0, 21805)
+        process0.AddNewTalkToNpcBlock(QuestAnnounceType.Accept, Stage.FortThines1, 2, 0, NpcId.Nedo0, 24355)
             .AddQuestFlag(QuestFlagType.QstLayout, QuestFlagAction.Set, QstLayoutFlag.FortThinesNpcs2);
         process0.AddIsStageNoBlock(QuestAnnounceType.CheckpointAndUpdate, Stage.RoyalFamilysSecretPath)
             .AddQuestFlag(QuestFlagType.QstLayout, QuestFlagAction.Set, QstLayoutFlag.SecretPathNedo)

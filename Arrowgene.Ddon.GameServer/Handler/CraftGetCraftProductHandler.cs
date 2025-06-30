@@ -34,7 +34,7 @@ namespace Arrowgene.Ddon.GameServer.Handler
                     PlusValue = (byte)craftProgress.PlusValue
                 };
 
-                var (specialQueue, isSpecial) = Server.ItemManager.HandleSpecialItem(client, new(), (ItemId)craftProgress.ItemId, craftProgress.CreateCount, connection);
+                var (specialQueue, isSpecial) = Server.ItemManager.HandleSpecialItem(client, new(), (ItemId)craftProgress.ItemId, craftProgress.CreateCount, false, connection);
 
                 if (isSpecial)
                 {

@@ -68,7 +68,7 @@ namespace Arrowgene.Ddon.GameServer.Handler
 
                     var purchase = AppraiseItem(client.Character, appraisalItems[item.Id]);
 
-                    var (specialQueue, isSpecial) = Server.ItemManager.HandleSpecialItem(client, updateCharacterItemNtc, (ItemId)purchase.ItemId, purchase.ItemNum, connection);
+                    var (specialQueue, isSpecial) = Server.ItemManager.HandleSpecialItem(client, updateCharacterItemNtc, (ItemId)purchase.ItemId, purchase.ItemNum, false, connection);
                     if (isSpecial)
                     {
                         queue.AddRange(specialQueue);

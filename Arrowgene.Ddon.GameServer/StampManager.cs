@@ -89,7 +89,7 @@ namespace Arrowgene.Ddon.GameServer
                     }
                     else 
                     {
-                        var (bonusQueue, isSpecial) = Server.ItemManager.HandleSpecialItem(client, ntc, (ItemId)bonus.BonusType, bonus.BonusValue);
+                        var (bonusQueue, isSpecial) = Server.ItemManager.HandleSpecialItem(client, ntc, (ItemId)bonus.BonusType, bonus.BonusValue, false);
                         if (isSpecial)
                         {
                             queue.AddRange(bonusQueue);

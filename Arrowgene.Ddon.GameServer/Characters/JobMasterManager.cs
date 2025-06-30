@@ -235,7 +235,7 @@ namespace Arrowgene.Ddon.GameServer.Characters
             var packets = new PacketQueue();
 
             var jobId = client.Character.ActiveCharacterJobData.Job;
-            if (!client.Character.JobMasterActiveOrders.ContainsKey(jobId))
+            if (!client.Character.HasContentReleased(jobId.JobTrainingReleaseId()) || !client.Character.JobMasterActiveOrders.ContainsKey(jobId))
             {
                 return new();
             }

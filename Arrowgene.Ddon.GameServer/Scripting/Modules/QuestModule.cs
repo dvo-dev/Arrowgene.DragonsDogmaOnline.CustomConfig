@@ -1,5 +1,4 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 using System.IO;
 
@@ -22,7 +21,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
         {
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
@@ -34,7 +33,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
                 return true;
             }
 
-            IQuest quest = (IQuest)result.ReturnValue;
+            IQuest quest = (IQuest)result;
             if (quest == null)
             {
                 return false;

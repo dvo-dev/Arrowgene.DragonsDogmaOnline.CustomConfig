@@ -1,7 +1,6 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
 using Arrowgene.Ddon.Shared.Entity.Structure;
 using Arrowgene.Ddon.Shared.Model;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,14 +31,14 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             return (ushort) StatTables[equipStatId].Where(x => x.Level <= level).Sum(x => x.Amount);
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
                 return false;
             }
 
-            var statTable = (IJobEmblemStatTable)result.ReturnValue;
+            var statTable = (IJobEmblemStatTable)result;
             if (statTable != null)
             {
                 StatTables[statTable.StatId] = statTable.StatUpgradeData;

@@ -1,6 +1,5 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
 using Arrowgene.Ddon.Shared.Model;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 
 namespace Arrowgene.Ddon.GameServer.Scripting
@@ -19,14 +18,14 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             NpcExtendedFacilities = new Dictionary<NpcId, INpcExtendedFacility>();
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
                 return false;
             }
 
-            INpcExtendedFacility extendedFacility = (INpcExtendedFacility)result.ReturnValue;
+            INpcExtendedFacility extendedFacility = (INpcExtendedFacility)result;
             NpcExtendedFacilities[extendedFacility.NpcId] = extendedFacility;
 
             return true;

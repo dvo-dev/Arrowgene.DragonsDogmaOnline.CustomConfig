@@ -1,4 +1,3 @@
-using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +28,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             return (T) Mixins[scriptName];
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
@@ -38,7 +37,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
 
             // Mixins are c# Func<> with arbitary return and params based on the functionality
             string mixinName = Path.GetFileNameWithoutExtension(path);
-            Mixins[mixinName] = result.ReturnValue;
+            Mixins[mixinName] = result;
 
             return true;
         }

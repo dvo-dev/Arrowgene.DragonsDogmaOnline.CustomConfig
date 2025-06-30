@@ -6,7 +6,7 @@
 
 public class MonsterSpotInfo : IMonsterSpotInfo
 {
-    public override StageLayoutId StageLayoutId => Stage.Lestania.AsStageLayoutId(495);
+    public override StageLayoutId StageLayoutId => Stage.Lestania.AsStageLayoutId(491);
     public override QuestAreaId AreaId => QuestAreaId.DoweValley;
     public override uint RequiredAreaRank => 3;
 
@@ -20,11 +20,11 @@ public class MonsterSpotInfo : IMonsterSpotInfo
     {
         var enemies = new List<InstancedEnemy>()
         {
-            LibDdon.Enemy.CreateAuto(EnemyId.GiantSulfurSaurian, 32, 0)
+            LibDdon.Enemy.CreateAuto(EnemyId.GiantSulfurSaurian, 32, 5)
                 .SetNamedEnemyParams(NamedParamId.SulfurTigerTail),
-            LibDdon.Enemy.CreateAuto(EnemyId.SulfurSaurian, 30, 1)
+            LibDdon.Enemy.CreateAuto(EnemyId.SulfurSaurian, 30, 6)
                 .SetNamedEnemyParams(NamedParamId.Strange),
-            LibDdon.Enemy.CreateAuto(EnemyId.SnowHarpy, 28, 2),
+            LibDdon.Enemy.CreateAuto(EnemyId.SnowHarpy, 28, 7),
         };
 
         var dropsTable = LibDdon.Enemy.GetDropsTable(enemies[0]).Clone()

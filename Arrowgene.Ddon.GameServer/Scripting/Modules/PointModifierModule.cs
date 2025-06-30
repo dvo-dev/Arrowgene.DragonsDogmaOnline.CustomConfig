@@ -1,7 +1,6 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
 using Arrowgene.Ddon.Shared.Model;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
         {
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
@@ -44,7 +43,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             }
 
             string scriptName = Path.GetFileNameWithoutExtension(path);
-            Modifiers[scriptName] = (IPointModifier)result.ReturnValue;
+            Modifiers[scriptName] = (IPointModifier)result;
 
             return true;
         }

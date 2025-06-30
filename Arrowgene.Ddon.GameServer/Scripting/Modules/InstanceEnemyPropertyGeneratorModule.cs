@@ -1,5 +1,4 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,14 +24,14 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             return InstanceEnemyProperties.Values.ToList();
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
                 return false;
             }
 
-            var generator = (IInstanceEnemyPropertyGenerator)result.ReturnValue;
+            var generator = (IInstanceEnemyPropertyGenerator)result;
             if (generator == null)
             {
                 return false;

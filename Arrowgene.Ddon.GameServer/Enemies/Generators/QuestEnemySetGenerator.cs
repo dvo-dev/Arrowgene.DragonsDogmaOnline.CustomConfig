@@ -1,8 +1,12 @@
 using Arrowgene.Ddon.GameServer.Characters;
+using Arrowgene.Ddon.GameServer.Context;
 using Arrowgene.Ddon.GameServer.Quests;
 using Arrowgene.Ddon.Shared.Model;
 using Arrowgene.Ddon.Shared.Model.Quest;
+using Arrowgene.Logging;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Arrowgene.Ddon.GameServer.Enemies.Generators
@@ -29,7 +33,6 @@ namespace Arrowgene.Ddon.GameServer.Enemies.Generators
 
         private Quest FindQuestBasedOnPriority(GameClient client, StageLayoutId stageLayoutId, uint subgroupId)
         {
-
             var quests = new List<Quest>();
             foreach (var questScheduleId in QuestManager.CollectQuestScheduleIds(client, stageLayoutId))
             {

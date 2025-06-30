@@ -1,5 +1,5 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
-using Microsoft.CodeAnalysis.Scripting;
+using System.Collections.Generic;
 
 namespace Arrowgene.Ddon.GameServer.Scripting
 {
@@ -14,14 +14,14 @@ namespace Arrowgene.Ddon.GameServer.Scripting
         {
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
                 return false;
             }
 
-            IAddendum addendum = (IAddendum)result.ReturnValue;
+            IAddendum addendum = (IAddendum)result;
             addendum.Amend();
 
             return true;

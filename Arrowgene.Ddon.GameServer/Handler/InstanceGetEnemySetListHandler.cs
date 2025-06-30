@@ -1,3 +1,4 @@
+using Arrowgene.Ddon.GameServer.Context;
 using Arrowgene.Ddon.GameServer.Enemies.Generators;
 using Arrowgene.Ddon.Server;
 using Arrowgene.Ddon.Shared.Crypto;
@@ -6,6 +7,7 @@ using Arrowgene.Ddon.Shared.Model;
 using Arrowgene.Ddon.Shared.Model.Quest;
 using Arrowgene.Logging;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Arrowgene.Ddon.GameServer.Handler
 {
@@ -56,7 +58,14 @@ namespace Arrowgene.Ddon.GameServer.Handler
             for (var i = 0; i < instancedEnemyList.Count; i++)
             {
                 var enemy = client.Party.InstanceEnemyManager.GetInstanceEnemy(stageLayoutId, instancedEnemyList[i].Index);
-                if (enemy == null)
+
+                if (enemy != null && (enemy.QuestScheduleId != instancedEnemyList[i].QuestScheduleId))
+                {
+                    var uid = ContextManager.CreateEnemyUID(enemy.Index, stageLayoutId.ToCDataStageLayoutId());
+                    ContextManager.RemoveContext(client.Party, uid);
+                }
+
+                if (enemy == null || (enemy.QuestScheduleId != instancedEnemyList[i].QuestScheduleId))
                 {
                     enemy = instancedEnemyList[i].CreateNewInstance();
                     if (Server.GameSettings.GameServerSettings.EnableAutomaticExpCalculationForAll)

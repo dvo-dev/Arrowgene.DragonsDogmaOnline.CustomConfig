@@ -94,11 +94,7 @@ public class InstanceEnemyManager : InstanceAssetManager<Enemy, InstancedEnemy>
             {
                 _EnemyData[stageId] = new Dictionary<int, InstancedEnemy>();
             }
-
-            if (!_EnemyData[stageId].ContainsKey(index))
-            {
-                _EnemyData[stageId][index] = enemy;
-            }
+            _EnemyData[stageId][index] = enemy;
         }
     }
 

@@ -1,6 +1,5 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
 using Arrowgene.Ddon.Shared.Entity.Structure;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,14 +19,14 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             return SpecialConditions.Select(x => x.Value.ToCDataJobOrbDevoteElementSpecialCondition(client)).ToList();
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
                 return false;
             }
 
-            var specialCondition = (IJobOrbSpecialCondition)result.ReturnValue;
+            var specialCondition = (IJobOrbSpecialCondition)result;
             if (specialCondition != null)
             {
                 SpecialConditions[specialCondition.ConditionId] = specialCondition;

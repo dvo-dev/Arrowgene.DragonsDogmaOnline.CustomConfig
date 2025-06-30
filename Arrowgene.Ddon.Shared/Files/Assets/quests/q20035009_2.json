@@ -46,18 +46,15 @@
     {
       "stage_id": {
         "id": 1,
-        "group_id": 495
+        "group_id": 228
       },
-      "placement_type": "manual",
       "enemies": [
         {
           "enemy_id": "0x015710",
-          "start_think_tbl_no": 1,
-		      "named_enemy_params_id": 54,
+          "named_enemy_params_id": 54,
           "level": 60,
-          "exp": 34700,
-          "is_boss": true,
-          "index": 2
+          "exp_scheme": "Automatic",
+          "is_boss": true
         }
       ]
     }
@@ -65,6 +62,7 @@
   "blocks": [
     {
       "type": "DiscoverEnemy",
+      "show_marker": false,
       "groups": [ 0 ]
     },
     {

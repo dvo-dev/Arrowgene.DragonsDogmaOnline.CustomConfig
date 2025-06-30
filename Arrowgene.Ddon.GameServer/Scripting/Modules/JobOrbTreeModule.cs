@@ -1,6 +1,5 @@
 using Arrowgene.Ddon.GameServer.Scripting.Interfaces;
 using Arrowgene.Ddon.Shared.Model;
-using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 
 namespace Arrowgene.Ddon.GameServer.Scripting
@@ -25,14 +24,14 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             SkillAugmentations = new Dictionary<JobId, List<JobOrbUpgrade>>();
         }
 
-        public override bool EvaluateResult(string path, ScriptState<object> result)
+        public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
         {
             if (result == null)
             {
                 return false;
             }
 
-            var skillAugmentationInformation = (ISkillAugmentation) result.ReturnValue;
+            var skillAugmentationInformation = (ISkillAugmentation) result;
             if (skillAugmentationInformation != null)
             {
                 SkillAugmentations[skillAugmentationInformation.JobId] = skillAugmentationInformation.Upgrades;

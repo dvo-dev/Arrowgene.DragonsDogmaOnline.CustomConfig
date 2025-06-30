@@ -1,11 +1,12 @@
+using Arrowgene.Buffers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using Arrowgene.Buffers;
 
 namespace Arrowgene.Ddon.Shared
 {
@@ -511,6 +512,14 @@ namespace Arrowgene.Ddon.Shared
             }
 
             return content;   
+        }
+
+        public static string GetHash<T>(this Stream stream) where T : HashAlgorithm
+        {
+            using T crypt = (T)CryptoConfig.CreateFromName(typeof(T).Name);
+            var hash = crypt.ComputeHash(stream);
+            stream.Position = 0;
+            return Convert.ToHexStringLower(hash);
         }
     }
 }

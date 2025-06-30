@@ -69,8 +69,19 @@ namespace Arrowgene.Ddon.GameServer.Characters
             {ItemId.CurrencyForResettingCraftP, (WalletType.ResetCraftSkills, 1)},
             {ItemId.SilverTicket, (WalletType.SilverTickets, 1) },
             {ItemId.CustomMadeServiceTicket, (WalletType.CustomMadeServiceTickets, 1) },
-            {ItemId.GoldenGemstone, (WalletType.GoldenGemstones, 1) }
+            {ItemId.GoldenGemstone, (WalletType.GoldenGemstones, 1) },
             // TODO: Find all items that add wallet points
+        };
+
+        private static Dictionary<ItemId, (PointType PointType, uint Quantity)> PointItems = new()
+        {
+            {ItemId.PlayPoint0, (PointType.PlayPoints, 18)},
+            {ItemId.PlayPoint1, (PointType.PlayPoints, 1)},
+            {ItemId.PlayPoint2, (PointType.PlayPoints, 10)},
+            {ItemId.PlayPoint3, (PointType.PlayPoints, 100)},
+            {ItemId.ExperienceCrystal0, (PointType.ExperiencePoints, 10)},
+            {ItemId.ExperienceCrystal1, (PointType.ExperiencePoints, 10000)},
+            {ItemId.ExperienceCrystal2, (PointType.ExperiencePoints, 63000)},
         };
 
         private static readonly Dictionary<ItemId, uint> AbilityItems = new Dictionary<ItemId, uint>()
@@ -195,37 +206,7 @@ namespace Arrowgene.Ddon.GameServer.Characters
             return ItemIdWalletTypeAndQuantity[itemId];
         }
 
-        // [[item]]
-        // id = 16822 (Adds 100 XP)
-        // old = '経験値結晶'
-        // new = 'Experience Crystal'
-        // [[item]]
-        // id = 16831 (Adds 10000 XP)
-        // old = '経験値結晶'
-        // new = 'Experience Crystal'
-        // [[item]]
-        // id = 18831 (Adds 63000 XP)
-        // old = '経験値結晶'
-        // new = 'Experience Crystal'
-
-        // [[item]]
-        // id = 18832 (Adds 18 PP)
-        // old = 'プレイポイント'
-        // new = 'Play Point'
-        // [[item]]
-        // id = 25651 (Adds 1 PP)
-        // old = 'プレイポイント'
-        // new = 'Play Point'
-        // [[item]]
-        // id = 25652 (Adds 10 PP)
-        // old = 'プレイポイント'
-        // new = 'Play Point'
-        // [[item]]
-        // id = 25653 (Adds 100 PP)
-        // old = 'プレイポイント'
-        // new = 'Play Point'
-
-        public (PacketQueue queue, bool IsSpecial) HandleSpecialItem(GameClient client, S2CItemUpdateCharacterItemNtc ntc, ItemId item, uint count, DbConnection? connectionIn = null)
+        public (PacketQueue queue, bool IsSpecial) HandleSpecialItem(GameClient client, S2CItemUpdateCharacterItemNtc ntc, ItemId item, uint count, bool isOnUse, DbConnection? connectionIn = null)
         {
             var itemInfo = _Server.AssetRepository.ClientItemInfos[item];
             if (ItemIdWalletTypeAndQuantity.ContainsKey(item))
@@ -233,15 +214,32 @@ namespace Arrowgene.Ddon.GameServer.Characters
                 var walletTypeAndQuantity = ItemIdWalletTypeAndQuantity[item];
                 uint totalQuantityToAdd = walletTypeAndQuantity.Quantity * count;
 
+                
                 ntc.UpdateWalletList.Add(
                     _Server.WalletManager.AddToWallet(client.Character, walletTypeAndQuantity.Type, totalQuantityToAdd, 0, connectionIn
                 ));
-
                 return (new(), true);
             }
             else if (AreaPointItems.TryGetValue(item, out var pointArea))
             {
                 return (_Server.AreaRankManager.AddAreaPoint(client, pointArea, (10 * count, 0), connectionIn), true);
+            }
+            else if (isOnUse && PointItems.ContainsKey(item))
+            {
+                PacketQueue queue = new();
+                var pointItem = PointItems[item];
+
+                var gainedPoints = (pointItem.Quantity * count, 0U);
+                switch (pointItem.PointType)
+                {
+                    case PointType.ExperiencePoints:
+                        queue = _Server.ExpManager.AddExp(client, client.Character, gainedPoints, RewardSource.Enemy, connectionIn: connectionIn);
+                        break;
+                    case PointType.PlayPoints:
+                        queue.Enqueue(client, _Server.PPManager.AddPlayPoint(client, gainedPoints, connectionIn: connectionIn));
+                        break;
+                }
+                return (queue, true);
             }
             else if (itemInfo?.Category == 6 || itemInfo?.Category == 7)
             {
@@ -266,7 +264,7 @@ namespace Arrowgene.Ddon.GameServer.Characters
 
         public PacketQueue GatherItem(GameClient client, S2CItemUpdateCharacterItemNtc ntc, InstancedGatheringItem gatheringItem, uint pickedGatherItems, DbConnection? connectionIn = null)
         {
-            var (queue, isSpecial) = HandleSpecialItem(client, ntc, gatheringItem.ItemId, pickedGatherItems, connectionIn);
+            var (queue, isSpecial) = HandleSpecialItem(client, ntc, gatheringItem.ItemId, pickedGatherItems, false, connectionIn);
             if (!isSpecial)
             {
                 List<CDataItemUpdateResult> results = AddItem(_Server, client.Character, true, (uint)gatheringItem.ItemId, pickedGatherItems, connectionIn: connectionIn);

@@ -29,5 +29,7 @@
     <ItemGroup>
       <PackageReference Include="Arrowgene.Logging" Version="1.2.1" />
     </ItemGroup>
-    
+    <ItemGroup>
+        <RuntimeHostConfigurationOption Include="System.GC.Server" Value="true" />
+    </ItemGroup>
 </Project>
