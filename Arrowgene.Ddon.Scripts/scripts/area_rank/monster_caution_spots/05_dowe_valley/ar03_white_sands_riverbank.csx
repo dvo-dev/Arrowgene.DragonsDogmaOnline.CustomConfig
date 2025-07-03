@@ -24,7 +24,10 @@ public class MonsterSpotInfo : IMonsterSpotInfo
                 .SetNamedEnemyParams(NamedParamId.SulfurTigerTail),
             LibDdon.Enemy.CreateAuto(EnemyId.SulfurSaurian, 30, 6)
                 .SetNamedEnemyParams(NamedParamId.Strange),
-            LibDdon.Enemy.CreateAuto(EnemyId.SnowHarpy, 28, 7),
+            LibDdon.Enemy.CreateAuto(EnemyId.SulfurSaurian, 30, 7)
+                .SetNamedEnemyParams(NamedParamId.Strange),
+            LibDdon.Enemy.CreateAuto(EnemyId.SnowHarpy, 28, 3),
+            LibDdon.Enemy.CreateAuto(EnemyId.SnowHarpy, 28, 4),
         };
 
         var dropsTable = LibDdon.Enemy.GetDropsTable(enemies[0]).Clone()

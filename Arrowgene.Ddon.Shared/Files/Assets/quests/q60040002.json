@@ -41,7 +41,7 @@
                     "comment": "Harpy Grave Robber",
                     "enemy_id": "0x010600",
                     "level": 38,
-                    "is_boss": true,
+                    "is_boss": false,
                     "named_enemy_params_id": 217,
                     "exp_scheme": "automatic"
                 },
@@ -49,7 +49,7 @@
                     "comment": "Harpy Grave Robber",
                     "enemy_id": "0x010600",
                     "level": 38,
-                    "is_boss": true,
+                    "is_boss": false,
                     "named_enemy_params_id": 217,
                     "exp_scheme": "automatic"
                 },
@@ -57,7 +57,7 @@
                     "comment": "Harpy Grave Robber",
                     "enemy_id": "0x010600",
                     "level": 38,
-                    "is_boss": true,
+                    "is_boss": false,
                     "named_enemy_params_id": 217,
                     "exp_scheme": "automatic"
                 },
