@@ -145,7 +145,7 @@ public class ScriptedQuest : IQuest
             .AddQuestFlag(QuestFlagType.QstLayout, QuestFlagAction.Set, QstLayoutFlag.Gillian);
         process0.AddTalkToNpcBlock(QuestAnnounceType.CheckpointAndUpdate, Stage.AudienceChamber, NpcId.Joseph, 21291);
         process0.AddIsStageNoBlock(QuestAnnounceType.None, Stage.AudienceChamber)
-            .AddResultCmdReleaseAnnounce(ContentsRelease.RathniteFoothillsWorldQuests);
+            .AddResultCmdReleaseAnnounce(ContentsRelease.RathniteFoothillsWorldQuests, flagInfo: QuestFlags.RathniteFoothills.CaveOfHellsDescent);
         process0.AddProcessEndBlock(true);
     }
 }

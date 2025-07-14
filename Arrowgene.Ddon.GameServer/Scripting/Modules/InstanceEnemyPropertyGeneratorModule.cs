@@ -21,7 +21,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
 
         public List<IInstanceEnemyPropertyGenerator> GetGenerators()
         {
-            return InstanceEnemyProperties.Values.ToList();
+            return InstanceEnemyProperties.Values.OrderBy(x => x.ScriptRank).ToList();
         }
 
         public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)

@@ -27,6 +27,97 @@ private static class Settings
     }
 }
 
+private class GatheringExtensions
+{
+    public const int MIN_GATHERING_RANK = 1;
+    public const int MAX_GATHERING_RANK = 11;
+
+    private static readonly Dictionary<GatheringType, int> ChestModifierRank = new Dictionary<GatheringType, int>()
+    {
+        [GatheringType.OM_GATHER_NONE] = 0,
+        [GatheringType.OM_GATHER_TREA_OLD] = 0,
+        [GatheringType.OM_GATHER_SHIP] = 1,
+        [GatheringType.OM_GATHER_TREA_TREE] = 1,
+        [GatheringType.OM_GATHER_KEY_LV1] = 1,
+        [GatheringType.OM_GATHER_KEY_LV2] = 2,
+        [GatheringType.OM_GATHER_TREA_IRON] = 2,
+        [GatheringType.OM_GATHER_KEY_LV3] = 3,
+        [GatheringType.OM_GATHER_KEY_LV4] = 4,
+    };
+
+    private static readonly Dictionary<OmGatheringPoint, int> TreasureChestBaseRank = new Dictionary<OmGatheringPoint, int>()
+    {
+        [OmGatheringPoint.BrownChest] = 1,
+        [OmGatheringPoint.IronChest] = 2,
+        [OmGatheringPoint.TreasureChest] = 3,
+        [OmGatheringPoint.BronzeChest] = 4,
+        [OmGatheringPoint.SilverChest] = 5,
+        [OmGatheringPoint.GoldChest] = 6,
+        [OmGatheringPoint.PurpleChest] = 7,
+    };
+
+    public static int GetTreasureChestRank(GatheringSpotInfo spotInfo)
+    {
+        if (!spotInfo.UnitId.IsTreasureChest())
+        {
+            return MIN_GATHERING_RANK;
+        }
+        return TreasureChestBaseRank[spotInfo.UnitId] + ChestModifierRank[spotInfo.GatheringType];
+    }
+
+    private static readonly Dictionary<GatheringType, int> LumberModifierRank = new Dictionary<GatheringType, int>()
+    {
+        [GatheringType.OM_GATHER_NONE] = 0,
+        [GatheringType.OM_GATHER_TREE_LV1] = 1,
+        [GatheringType.OM_GATHER_TREE_LV2] = 2,
+        [GatheringType.OM_GATHER_TREE_LV3] = 3,
+        [GatheringType.OM_GATHER_TREE_LV4] = 4,
+    };
+
+    private static readonly Dictionary<GatheringType, int> GemstoneModifierRank = new Dictionary<GatheringType, int>()
+    {
+        [GatheringType.OM_GATHER_NONE] = 0,
+        [GatheringType.OM_GATHER_JWL_LV1] = 1,
+        [GatheringType.OM_GATHER_JWL_LV2] = 2,
+        [GatheringType.OM_GATHER_JWL_LV3] = 3,
+    };
+
+    private static readonly Dictionary<GatheringType, int> OreModiferRank = new Dictionary<GatheringType, int>()
+    {
+        [GatheringType.OM_GATHER_NONE] = 0,
+        [GatheringType.OM_GATHER_CRST_LV1] = 1,
+        [GatheringType.OM_GATHER_CRST_LV2] = 2,
+        [GatheringType.OM_GATHER_CRST_LV3] = 3,
+        [GatheringType.OM_GATHER_CRST_LV4] = 4,
+    };
+
+    private static readonly Dictionary<GatheringType, int> CorpseModifier = new Dictionary<GatheringType, int>()
+    {
+        [GatheringType.OM_GATHER_NONE] = 0,
+        [GatheringType.OM_GATHER_CORPSE] = 1,
+        [GatheringType.OM_GATHER_DRAGON] = 2,
+    };
+
+
+    public static int GetGatherSpotRank(GatheringSpotInfo spotInfo)
+    {
+        switch (spotInfo.UnitId.GetGatheringPointType())
+        {
+            case GatheringPointType.TreasureChest:
+                return GetTreasureChestRank(spotInfo);
+            case GatheringPointType.Lumber:
+                return MIN_GATHERING_RANK + LumberModifierRank[spotInfo.GatheringType];
+            case GatheringPointType.Gemstone:
+                return MIN_GATHERING_RANK + GemstoneModifierRank[spotInfo.GatheringType];
+            case GatheringPointType.Ore:
+                return MIN_GATHERING_RANK + OreModiferRank[spotInfo.GatheringType];
+            case GatheringPointType.Corpse:
+                return MIN_GATHERING_RANK + CorpseModifier[spotInfo.GatheringType];
+        }
+        return MIN_GATHERING_RANK;
+    }
+}
+
 public class Mixin : IDefaultGatherMixin
 {
     private static readonly ILogger Logger = LogProvider.Logger(typeof(Mixin));
@@ -41,32 +132,10 @@ public class Mixin : IDefaultGatherMixin
         List<InstancedGatheringItem> results = new();
         if (LibDdon.Assets.DefaultGatheringDropsAsset.SpotDefaultDrops.ContainsKey((stageLayoutId, index)))
         {
-            results = HandleSpotDrops(client, stageLayoutId, index);
-        }
-        else
-        {
-            results = HandleAreaDrops(client, stageLayoutId, index);
+            return new();
         }
 
-        return results;
-    }
-
-    private List<InstancedGatheringItem> HandleSpotDrops(GameClient client, StageLayoutId stageLayoutId, uint index)
-    {
-        // TODO: Fill in spot info before using it
-        return new();
-        /*
-        var drops = LibDdon.Assets.DefaultGatheringDropsAsset.SpotDefaultDrops[(stageLayoutId, index)];
-
-        // Create a list which golds all the items we can roll
-        var rolls = drops.Select(x => x.ItemId).ToList();
-
-        // Determine how many items to generate
-        var slots = Random.Shared.WeightedNext(1, drops.Count, Settings.DefaultGatherDropsRandomBias);
-
-        var dropTable = drops.ToDictionary(x => x.ItemId, x => x);
-        return RollDrops(slots, rolls, dropTable, Settings.DefaultGatherDropsRandomBias);
-        */
+        return HandleAreaDrops(client, stageLayoutId, index);
     }
 
     private List<InstancedGatheringItem> HandleAreaDrops(GameClient client, StageLayoutId stageLayoutId, uint index)
@@ -90,13 +159,15 @@ public class Mixin : IDefaultGatherMixin
 
         var spotInfo = stageSpots[(stageLayoutId.GroupId, index)];
 
-        Logger.Debug($"{stageLayoutId}.{index} {spotInfo.GatheringType}");
+        Logger.Debug($"{stageLayoutId}.{index}  OmType={spotInfo.UnitId}, GatheringType={spotInfo.GatheringType}");
 
-        var dropTable = GetDropCategoriesForType(spotInfo.GatheringType)
+        var dropTable = GetDropCategoriesForSpot(spotInfo)
             .Select(x => LibDdon.Assets.DefaultGatheringDropsAsset.AreaDefaultDrops[client.Character.AreaId][x])
             .Where(x => x.Count > 0)
             .SelectMany(x => x)
             .Where(x => x.StageId == stage.StageId)
+            .GroupBy(x => x.ItemId)
+            .Select(x => x.First())
             .OrderBy(x => x.ItemLevel)
             .ToDictionary(x => x.ItemId, x => x);
         if (dropTable.Count == 0)
@@ -104,14 +175,8 @@ public class Mixin : IDefaultGatherMixin
             return new();
         }
 
-        var potentialSlots = Settings.DefaultGatherDropMaxSlots;
-
-        var gatherPointRank = GatherTypeExtension.MIN_TYPE_RANK;
-        if (spotInfo.GatheringType.IsChest())
-        {
-            gatherPointRank = spotInfo.GatheringType.GetChestRank();
-            potentialSlots += (int)(gatherPointRank - GatherTypeExtension.MIN_TYPE_RANK);
-        }
+        var gatherPointRank = GatheringExtensions.GetGatherSpotRank(spotInfo);
+        var potentialSlots = Settings.DefaultGatherDropMaxSlots + (int)(gatherPointRank - GatheringExtensions.MIN_GATHERING_RANK);
 
         // Create a list which holds all the items we can roll
         var rolls = dropTable.Keys.ToList();
@@ -125,12 +190,12 @@ public class Mixin : IDefaultGatherMixin
 
     private double FindRollBiasForSpot(int rank)
     {
-        var preferenceScore = GatherTypeExtension.MAX_TYPE_RANK - rank + 1;
+        var preferenceScore = GatheringExtensions.MAX_GATHERING_RANK - rank + 1;
 
         double minBias = Settings.DefaultGatherDropsRandomBias; // Higher makes more skewed to common items
         double maxBias = 0.3; // lower makes it more skewed to rarer items
 
-        double t = (rank - 1.0) / (GatherTypeExtension.MAX_TYPE_RANK - 1.0); // Normalized rank [0, 1]
+        double t = (rank - 1.0) / (GatheringExtensions.MAX_GATHERING_RANK - 1.0); // Normalized rank [0, 1]
         return minBias * Math.Pow(maxBias / minBias, t);
     }
 
@@ -173,66 +238,39 @@ public class Mixin : IDefaultGatherMixin
         return results;
     }
 
-    private static List<DropCategory> SimpleTreasureChestCategories = new()
+    private static Dictionary<GatheringPointType, List<DropCategory>> DropCategories = new Dictionary<GatheringPointType, List<DropCategory>>()
     {
-        DropCategory.Currency,
-        DropCategory.Consumable,
-        DropCategory.Ore,
-        DropCategory.Sand,
-        DropCategory.Thread,
-        DropCategory.Plants,
-        DropCategory.Meat,
-        DropCategory.Scrolls,
+        [GatheringPointType.Alchemy] = [DropCategory.Liquids, DropCategory.Lumber, DropCategory.Other],
+        [GatheringPointType.Box] = [
+            DropCategory.Consumable, DropCategory.Dye, DropCategory.Thread, DropCategory.Fabric, DropCategory.Ingots, DropCategory.Ore,
+            DropCategory.Gemstones, DropCategory.Scrolls, DropCategory.Leather
+        ],
+        [GatheringPointType.Corpse] = [
+            DropCategory.Meat, DropCategory.Claws, DropCategory.Bones, DropCategory.Fang, DropCategory.Hides, DropCategory.Horns,
+            DropCategory.Furs, DropCategory.Feathers
+        ],
+        [GatheringPointType.Furniture] = [DropCategory.Consumable, DropCategory.Dye, DropCategory.Thread, DropCategory.Fabric, DropCategory.CrestArmor, DropCategory.CrestWeapon],
+        [GatheringPointType.Gemstone] = [DropCategory.Gemstones],
+        [GatheringPointType.Lumber] = [DropCategory.Lumber],
+        [GatheringPointType.Mushroom] = [DropCategory.Mushrooms],
+        [GatheringPointType.Ore] = [DropCategory.Ore],
+        [GatheringPointType.Plants] = [DropCategory.Plants],
+        [GatheringPointType.Sand] = [DropCategory.Sand],
+        [GatheringPointType.SealedTreasureChest] = [DropCategory.Equipment, DropCategory.Jewelry, DropCategory.Unappraised, DropCategory.Regional],
+        [GatheringPointType.Shell] = [DropCategory.Shell],
+        [GatheringPointType.TreasureChest] = DropCategoryExtension.All,
+        [GatheringPointType.Twinkle] = DropCategoryExtension.All,
+        [GatheringPointType.Water] = [DropCategory.Liquids],
     };
 
-    private static Dictionary<GatheringType, List<DropCategory>> DropCategories = new Dictionary<GatheringType, List<DropCategory>>()
+    private List<DropCategory> GetDropCategoriesForSpot(GatheringSpotInfo spotInfo)
     {
-        [GatheringType.OM_GATHER_NONE] = SimpleTreasureChestCategories, // Some spots are assigned as none? Looks like plain treasure chests
-        [GatheringType.OM_GATHER_TREE_LV1] = new() { DropCategory.Lumber },
-        [GatheringType.OM_GATHER_TREE_LV2] = new() { DropCategory.Lumber },
-        [GatheringType.OM_GATHER_TREE_LV3] = new() { DropCategory.Lumber },
-        [GatheringType.OM_GATHER_TREE_LV4] = new() { DropCategory.Lumber },
-        [GatheringType.OM_GATHER_JWL_LV1] = new() { DropCategory.Gemstones },
-        [GatheringType.OM_GATHER_JWL_LV2] = new() { DropCategory.Gemstones },
-        [GatheringType.OM_GATHER_JWL_LV3] = new() { DropCategory.Gemstones },
-        [GatheringType.OM_GATHER_CRST_LV1] = new() { DropCategory.Ore },
-        [GatheringType.OM_GATHER_CRST_LV2] = new() { DropCategory.Ore },
-        [GatheringType.OM_GATHER_CRST_LV3] = new() { DropCategory.Ore },
-        [GatheringType.OM_GATHER_CRST_LV4] = new() { DropCategory.Ore },
-        [GatheringType.OM_GATHER_KEY_LV1] = Enum.GetValues(typeof(DropCategory)).Cast<DropCategory>().ToList(),
-        [GatheringType.OM_GATHER_KEY_LV2] = Enum.GetValues(typeof(DropCategory)).Cast<DropCategory>().ToList(),
-        [GatheringType.OM_GATHER_KEY_LV3] = Enum.GetValues(typeof(DropCategory)).Cast<DropCategory>().ToList(),
-        [GatheringType.OM_GATHER_TREA_OLD] = SimpleTreasureChestCategories,
-        [GatheringType.OM_GATHER_KEY_LV4] = Enum.GetValues(typeof(DropCategory)).Cast<DropCategory>().ToList(),
-        [GatheringType.OM_GATHER_TREA_IRON] = Enum.GetValues(typeof(DropCategory)).Cast<DropCategory>().ToList(),
-        [GatheringType.OM_GATHER_TREA_TREE] = SimpleTreasureChestCategories,
-        [GatheringType.OM_GATHER_TREA_SILVER] = Enum.GetValues(typeof(DropCategory)).Cast<DropCategory>().ToList(),
-        [GatheringType.OM_GATHER_TREA_GOLD] = Enum.GetValues(typeof(DropCategory)).Cast<DropCategory>().ToList(),
-        [GatheringType.OM_GATHER_BOX] = SimpleTreasureChestCategories,
-        [GatheringType.OM_GATHER_SHIP] = SimpleTreasureChestCategories,
-        [GatheringType.OM_GATHER_DRAGON] = new() { DropCategory.Meat, DropCategory.Claws, DropCategory.Bones, DropCategory.Hides, DropCategory.Horns },
-        [GatheringType.OM_GATHER_CORPSE] = new() { DropCategory.Meat, DropCategory.Claws, DropCategory.Bones, DropCategory.Hides, DropCategory.Horns, DropCategory.Furs, DropCategory.Feathers },
-        [GatheringType.OM_GATHER_GRASS] = new() { DropCategory.Plants },
-        [GatheringType.OM_GATHER_FLOWER] = new() { DropCategory.Plants },
-        [GatheringType.OM_GATHER_MUSHROOM] = new() { DropCategory.Mushrooms },
-        [GatheringType.OM_GATHER_CLOTH] = new() { DropCategory.Fabric, DropCategory.Thread },
-        [GatheringType.OM_GATHER_BOOK] = new() { DropCategory.Scrolls },
-        [GatheringType.OM_GATHER_SAND] = new() { DropCategory.Sand },
-        [GatheringType.OM_GATHER_ALCHEMY] = new() { DropCategory.Liquids, DropCategory.Lumber, DropCategory.Other },
-        [GatheringType.OM_GATHER_WATER] = new() { DropCategory.Liquids },
-        [GatheringType.OM_GATHER_SHELL] = new() { DropCategory.Sand, DropCategory.Bones, DropCategory.Gemstones, DropCategory.Currency, DropCategory.Other },
-        [GatheringType.OM_GATHER_ANTIQUE] = new() { DropCategory.Plants },
-        [GatheringType.OM_GATHER_ONE_OFF] = new(),  // Red Light's in S2 areas
-        [GatheringType.OM_GATHER_TWINKLE] = new() { DropCategory.Sand }
-    };
-
-    private List<DropCategory> GetDropCategoriesForType(GatheringType gatheringType)
-    {
-        if (!DropCategories.ContainsKey(gatheringType))
+        var gatheringPointType = spotInfo.UnitId.GetGatheringPointType();
+        if (!DropCategories.ContainsKey(gatheringPointType))
         {
             return new();
         }
-        return DropCategories[gatheringType];
+        return DropCategories[gatheringPointType];
     }
 }
 

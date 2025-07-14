@@ -1,5 +1,6 @@
 using Arrowgene.Ddon.GameServer.Scripting;
 using Arrowgene.Ddon.Server;
+using Arrowgene.Ddon.Server.Scripting;
 using Arrowgene.Ddon.Shared.Csv;
 using Arrowgene.Logging;
 using Microsoft.CodeAnalysis;
@@ -11,9 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -96,8 +95,7 @@ namespace Arrowgene.Ddon.Shared.Scripting
             var compilation = script.GetCompilation();
 
             var emitOptions = new EmitOptions()
-                .WithDebugInformationFormat(DebugInformationFormat.Pdb)
-                .WithPdbFilePath(outputPath);
+                .WithDebugInformationFormat(DebugInformationFormat.Embedded);
 
             using (var stream = new FileStream(outputPath, FileMode.Create))
             {
@@ -123,7 +121,7 @@ namespace Arrowgene.Ddon.Shared.Scripting
                 using (FileStream stream = new(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     hash = stream.GetHash<MD5>();
-                    if (await RestoreScriptFromStoredDll(module, path, hash))
+                    if (RestoreScriptFromStoredDll(module, path, hash))
                     {
                         return;
                     }
@@ -187,7 +185,7 @@ namespace Arrowgene.Ddon.Shared.Scripting
         /// Returns if pathA contain pathB.
         /// </summary>
         /// <param name="pathA">The path to find pathB in.</param>
-        /// <param name="pathB">The path to find pathA in.</param>
+        /// <param name="pathB">The path to find in pathA.</param>
         /// <returns>Returns true if pathB is in pathA, otherwise false.</returns>
         private bool PathContains(string pathA, string pathB)
         {
@@ -196,7 +194,7 @@ namespace Arrowgene.Ddon.Shared.Scripting
             return normalizedA.Contains(normalizedB);
         }
 
-        private bool ShouldIgnoreFile(string path)
+        private bool ShouldIgnoreFile(ScriptModule module, string path)
         {
             foreach (var pathToIgnore in PathsToIgnore)
             {
@@ -205,6 +203,16 @@ namespace Arrowgene.Ddon.Shared.Scripting
                     return true;
                 }
             }
+
+            if (module != null)
+            {
+                var fileName = Path.GetFileName(path);
+                if (module.IgnoredScripts.Contains(fileName))
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
 
@@ -226,7 +234,7 @@ namespace Arrowgene.Ddon.Shared.Scripting
                 foreach (var filePath in Directory.GetFiles(path, "*.csx", SearchOption.AllDirectories))
                 {
                     var fileToCompile = filePath;
-                    if (ShouldIgnoreFile(fileToCompile))
+                    if (ShouldIgnoreFile(module, fileToCompile))
                     {
                         continue;
                     }
@@ -307,7 +315,7 @@ namespace Arrowgene.Ddon.Shared.Scripting
                 return;
             }
 
-            if (ShouldIgnoreFile(e.FullPath))
+            if (ShouldIgnoreFile(null, e.FullPath))
             {
                 return;
             }
@@ -339,7 +347,7 @@ namespace Arrowgene.Ddon.Shared.Scripting
 
         private void OnCreate(object sender, FileSystemEventArgs e)
         {
-            if (ShouldIgnoreFile(e.FullPath))
+            if (ShouldIgnoreFile(null, e.FullPath))
             {
                 return;
             }
@@ -399,40 +407,22 @@ namespace Arrowgene.Ddon.Shared.Scripting
             }
         }
 
-        private async Task<bool> RestoreScriptFromStoredDll(ScriptModule module, string path, string hash)
+        private bool RestoreScriptFromStoredDll(ScriptModule module, string path, string hash)
         {
             try
             {
                 if (ScriptHashes.TryGetValue(path, out var pastResult))
                 {
-                    if (pastResult.Hash == hash)
+                    if (pastResult.Hash != hash)
                     {
-                        var assembly = Assembly.LoadFile(pastResult.DllPath);
-                        var type = assembly.GetType("Submission#0");
-                        var factory = type.GetMethod("<Factory>");
-                        var submissionArray = new object[2];
-                        Task<object> task = (Task<object>)factory.Invoke(null, [submissionArray]);
-                        await task;
-
-                        Dictionary<string, object> variables = [];
-                        foreach (var member in type.GetMembers())
-                        {
-                            if (member is FieldInfo fieldInfo)
-                            {
-                                object value = fieldInfo.GetValue(submissionArray[1]);
-                                if (value is not null)
-                                {
-                                    variables.Add(fieldInfo.Name, value);
-                                }
-                            }
-                        }
-
-                        if (!module.EvaluateResult(path, task.Result, variables))
-                        {
-                            throw new Exception("Failed to evaluate the result of executing a stored DLL.");
-                        }
-                        return true;
+                        return false;
                     }
+
+                    ScriptProxy script = new(pastResult.DllPath);
+                    script.LoadAssembly();
+                    script.Execute(module, path);
+                    script.UnloadAssembly();
+                    return true;
                 }
             }
             catch (Exception ex)

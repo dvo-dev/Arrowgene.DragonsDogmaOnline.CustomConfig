@@ -1,3 +1,4 @@
+using Arrowgene.Ddon.GameServer.Scripting.Modules;
 using Arrowgene.Ddon.Server;
 using Arrowgene.Ddon.Shared.Scripting;
 using Arrowgene.Logging;
@@ -31,8 +32,8 @@ namespace Arrowgene.Ddon.GameServer.Scripting
         public JobOrbTreeModule SkillAugmentationModule { get; private set; } = new JobOrbTreeModule("job_orb_tree/skill_augmentation");
         public JobOrbTreeModule SpecialSkillAugmentationModule { get; private set; } = new JobOrbTreeModule("job_orb_tree/special_skill_augmentation");
         public JobOrbTreeSpecialConditionModule JobOrbSpecialConditionModule { get; private set; } = new();
-
         public JobEmblemStatModule JobEmblemStatModule { get; private set; } = new JobEmblemStatModule();
+        public InstanceEnemyDropModule InstanceEnemyDropModule { get; private set; } = new();
 
 
         public GameServerScriptManager(DdonGameServer server) : base(server.AssetRepository.AssetsPath, ".")
@@ -55,6 +56,7 @@ namespace Arrowgene.Ddon.GameServer.Scripting
             AddModule(SpecialSkillAugmentationModule);
             AddModule(JobOrbSpecialConditionModule);
             AddModule(MonsterCautionSpotModule);
+            AddModule(InstanceEnemyDropModule);
         }
 
         public override void Initialize()

@@ -27,8 +27,16 @@ namespace Arrowgene.Ddon.GameServer.Scripting
 
         public HashSet<string> Scripts { get; set; }
 
+        /// <summary>
+        /// A list of scripts in the module directory which should be ignored 
+        /// and not compiled directly. These files may be interfaces or abstract classes
+        /// which can't be instantiated directly.
+        /// </summary>
+        public HashSet<string> IgnoredScripts { get; set; }
+
         public ScriptModule()
         {
+            IgnoredScripts = new HashSet<string>();
             Scripts = new HashSet<string>();
             Watchers = new List<FileSystemWatcher>();
         }

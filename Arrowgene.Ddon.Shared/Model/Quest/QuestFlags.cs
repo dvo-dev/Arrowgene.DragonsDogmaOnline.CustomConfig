@@ -561,6 +561,11 @@ namespace Arrowgene.Ddon.Shared.Model.Quest
             /// Opens the gate to Fort Thines (443)
             /// </summary>
             public static QuestFlagInfo FortThines1 { get; private set; } = QuestFlagInfo.WorldManageLayoutFlag(5407, QuestId.Q70030001, StageInfo);
+
+            /// <summary>
+            /// Opens the entrance to the cave of hells descent.
+            /// </summary>
+            public static QuestFlagInfo CaveOfHellsDescent { get; private set; } = QuestFlagInfo.WorldManageQuestFlag(3414, QuestId.Q70030001);
             
         }
 

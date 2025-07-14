@@ -66,7 +66,7 @@ namespace Arrowgene.Ddon.Shared.Model
             return enemy;
         }
 
-        //Adds drop to all enemy drop tables in pool of random enemies
+        // Adds drop to all enemy drop tables in pool of random enemies
         public override InstancedEnemy AddDrop(ItemId itemId, uint minAmount, uint maxAmount, double chance, uint quality = 0, bool isHidden = false) {
             foreach(var (enemyId, _) in Enemies) {
                 var table = DropTables[enemyId].Clone().AddDrop(itemId, minAmount, maxAmount, chance, quality, isHidden);

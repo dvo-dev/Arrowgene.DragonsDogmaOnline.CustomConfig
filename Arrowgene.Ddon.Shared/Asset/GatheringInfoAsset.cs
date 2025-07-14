@@ -8,7 +8,7 @@ namespace Arrowgene.Ddon.Shared.Asset
         public uint GroupNo { get; set; }
         public uint PosId { get; set; }
         public GatheringType GatheringType { get; set; }
-        public uint UintId { get; set; }
+        public OmGatheringPoint UnitId { get; set; }
         public (double X, double Y, double Z) Position { get; set; }
     }
 

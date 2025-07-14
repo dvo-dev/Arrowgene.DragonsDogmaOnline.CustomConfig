@@ -132,6 +132,11 @@ namespace Arrowgene.Ddon.GameServer.Characters
                 return queue;
             }
 
+            if (points.BasePoints + points.BonusPoints == 0)
+            {
+                return queue;
+            }
+
             AreaRank clientRank = client.Character.AreaRanks.GetValueOrDefault(areaId)
                 ?? throw new ResponseErrorException(ErrorCode.ERROR_CODE_AREAMASTER_AREA_INFO_NOT_FOUND);
             if (clientRank is null || clientRank.Rank == 0) {

@@ -1,9 +1,186 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Arrowgene.Ddon.Shared.Model
 {
+    public enum OmGatheringPoint : uint
+    {
+        // SetInfoOmGather
+        Alchemy0 = 520080,
+        Alchemy1 = 520081,
+        Alchemy2 = 520111,
+        Antique0 = 520110,
+        Antique1 = 520111,
+        Book = 520041,
+        Box0 = 520070,
+        Box1 = 520071,
+        Corpse = 520170,
+        Flower0 = 520010,
+        Flower1 = 520011,
+        Flower2 = 520012,
+        Grass0 = 520000,
+        Grass1 = 520001,
+        Grass2 = 520002,
+        Grass3 = 520003,
+        Grass4 = 520004,
+        Lumber0 = 520030,
+        Lumber1 = 520031,
+        Lumber2 = 520032,
+        Lumber3 = 520033,
+        MiningGemstone0 = 520050,
+        MiningGemstone1 = 520051,
+        MiningGemstone2 = 520052,
+        MiningGemstone3 = 520160,
+        MiningGemstone4 = 520161,
+        MiningGemstone5 = 520162,
+        MiningOre0 = 520160,
+        MiningOre1 = 520161,
+        MiningOre2 = 520162,
+        MiningOre3 = 520163,
+        Mushroom0 = 520020,
+        Mushroom1 = 520021,
+        Mushroom2 = 520022,
+        Mushroom3 = 520023,
+        Mushroom4 = 520024,
+        OneOff0 = 513054,
+        OneOff1 = 520171,
+        Sand = 520060,
+        Shells = 520100,
+        Twinkle0 = 520170,
+        Twinkle1 = 522552,
+        Twinkle2 = 523240,
+        Water = 520090,
+        // SetInfoOmTreasureBox
+        IronChest = 513050,
+        BrownChest = 513051,
+        TreasureChest = 513052,
+        BronzeChest = 513053,
+        SilverChest = 513054,
+        GoldChest = 513055,
+        PurpleChest = 513056,
+        UnkChest0 = 513060,
+        UnkChest1 = 513061,
+        // SetInfoOmTreasureBoxG (BBM)
+        OrangeSealedChest = 513130,
+        PurpleSealedChest = 513133,
+    }
+
+    public enum GatheringPointType
+    {
+        None,
+        Alchemy,
+        Box,
+        Corpse,
+        Furniture,
+        Gemstone,
+        Lumber,
+        Mushroom,
+        OneOff,
+        Ore,
+        Plants,
+        Sand,
+        SealedTreasureChest,
+        Shell,
+        TreasureChest,
+        Twinkle,
+        Water,
+    }
+
+    public static class GatheringPointTypeExtension
+    {
+        private static readonly Dictionary<OmGatheringPoint, GatheringPointType> OmGatherToGatheringPointTypeMap = new Dictionary<OmGatheringPoint, GatheringPointType>()
+        {
+            // OmSetGather
+            [OmGatheringPoint.Alchemy0] = GatheringPointType.Alchemy,
+            [OmGatheringPoint.Alchemy1] = GatheringPointType.Alchemy,
+            [OmGatheringPoint.Alchemy2] = GatheringPointType.Alchemy,
+            [OmGatheringPoint.Antique0] = GatheringPointType.Furniture,
+            [OmGatheringPoint.Antique1] = GatheringPointType.Furniture,
+            [OmGatheringPoint.Book] = GatheringPointType.Furniture,
+            [OmGatheringPoint.Box0] = GatheringPointType.Box,
+            [OmGatheringPoint.Box1] = GatheringPointType.Box,
+            [OmGatheringPoint.Corpse] = GatheringPointType.Corpse,
+            [OmGatheringPoint.Flower0] = GatheringPointType.Plants,
+            [OmGatheringPoint.Flower1] = GatheringPointType.Plants,
+            [OmGatheringPoint.Flower2] = GatheringPointType.Plants,
+            [OmGatheringPoint.MiningGemstone0] = GatheringPointType.Gemstone,
+            [OmGatheringPoint.MiningGemstone1] = GatheringPointType.Gemstone,
+            [OmGatheringPoint.MiningGemstone2] = GatheringPointType.Gemstone,
+            [OmGatheringPoint.MiningGemstone3] = GatheringPointType.Gemstone,
+            [OmGatheringPoint.MiningGemstone4] = GatheringPointType.Gemstone,
+            [OmGatheringPoint.MiningGemstone5] = GatheringPointType.Gemstone,
+            [OmGatheringPoint.Grass0] = GatheringPointType.Plants,
+            [OmGatheringPoint.Grass1] = GatheringPointType.Plants,
+            [OmGatheringPoint.Grass2] = GatheringPointType.Plants,
+            [OmGatheringPoint.Grass3] = GatheringPointType.Plants,
+            [OmGatheringPoint.Grass4] = GatheringPointType.Plants,
+            [OmGatheringPoint.Lumber0] = GatheringPointType.Lumber,
+            [OmGatheringPoint.Lumber1] = GatheringPointType.Lumber,
+            [OmGatheringPoint.Lumber2] = GatheringPointType.Lumber,
+            [OmGatheringPoint.Lumber3] = GatheringPointType.Lumber,
+            [OmGatheringPoint.Mushroom0] = GatheringPointType.Mushroom,
+            [OmGatheringPoint.Mushroom1] = GatheringPointType.Mushroom,
+            [OmGatheringPoint.Mushroom2] = GatheringPointType.Mushroom,
+            [OmGatheringPoint.Mushroom3] = GatheringPointType.Mushroom,
+            [OmGatheringPoint.Mushroom4] = GatheringPointType.Mushroom,
+            [OmGatheringPoint.MiningOre0] = GatheringPointType.Ore,
+            [OmGatheringPoint.MiningOre1] = GatheringPointType.Ore,
+            [OmGatheringPoint.MiningOre2] = GatheringPointType.Ore,
+            [OmGatheringPoint.MiningOre3] = GatheringPointType.Ore,
+            [OmGatheringPoint.Sand] = GatheringPointType.Sand,
+            [OmGatheringPoint.Shells] = GatheringPointType.Shell,
+            [OmGatheringPoint.Twinkle0] = GatheringPointType.Twinkle,
+            [OmGatheringPoint.Twinkle1] = GatheringPointType.Twinkle,
+            [OmGatheringPoint.Twinkle2] = GatheringPointType.Twinkle,
+            [OmGatheringPoint.Water] = GatheringPointType.Water,
+            // OneOffGathering (special)
+            [OmGatheringPoint.OneOff0] = GatheringPointType.OneOff,
+            [OmGatheringPoint.OneOff1] = GatheringPointType.OneOff,
+            // OmTreasureBox
+            [OmGatheringPoint.IronChest] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.BrownChest] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.TreasureChest] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.BronzeChest] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.SilverChest] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.GoldChest] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.PurpleChest] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.UnkChest0] = GatheringPointType.TreasureChest,
+            [OmGatheringPoint.UnkChest1] = GatheringPointType.TreasureChest,
+            // OmTreasureBoxG
+            [OmGatheringPoint.OrangeSealedChest] = GatheringPointType.SealedTreasureChest,
+            [OmGatheringPoint.PurpleSealedChest] = GatheringPointType.SealedTreasureChest,
+        };
+
+        public static GatheringPointType GetGatheringPointType(this OmGatheringPoint omGatheringPoint)
+        {
+            if (OmGatherToGatheringPointTypeMap.ContainsKey(omGatheringPoint))
+            {
+                return OmGatherToGatheringPointTypeMap[omGatheringPoint];
+            }
+            return GatheringPointType.None;
+        }
+
+        public static bool IsTreasureChest(this OmGatheringPoint omGatheringPoint)
+        {
+            var gatheringPointType = GetGatheringPointType(omGatheringPoint);
+            return gatheringPointType == GatheringPointType.TreasureChest || gatheringPointType == GatheringPointType.SealedTreasureChest;
+        }
+
+        public static bool IsLumberGatheringPoint(this OmGatheringPoint omGatheringPoint)
+        {
+            return GetGatheringPointType(omGatheringPoint) == GatheringPointType.Lumber;
+        }
+
+        public static bool IsOreMiningPoint(this OmGatheringPoint omGatheringPoint)
+        {
+            return GetGatheringPointType(omGatheringPoint) == GatheringPointType.Ore;
+        }
+
+        public static bool IsGemstoneMiningPoint(this OmGatheringPoint omGatheringPoint)
+        {
+            return GetGatheringPointType(omGatheringPoint) == GatheringPointType.Gemstone;
+        }
+    }
+
     public enum GatheringType : uint
     {
         OM_GATHER_NONE = 0x0,
@@ -47,26 +224,6 @@ namespace Arrowgene.Ddon.Shared.Model
 
     public static class GatherTypeExtension
     {
-        private static List<GatheringType> ChestType = new()
-        {
-            GatheringType.OM_GATHER_NONE,
-            GatheringType.OM_GATHER_TREA_OLD,
-            GatheringType.OM_GATHER_TREA_TREE,
-            GatheringType.OM_GATHER_SHIP,
-            GatheringType.OM_GATHER_KEY_LV1,
-            GatheringType.OM_GATHER_KEY_LV2,
-            GatheringType.OM_GATHER_KEY_LV3,
-            GatheringType.OM_GATHER_KEY_LV4,
-            GatheringType.OM_GATHER_TREA_IRON,
-            GatheringType.OM_GATHER_TREA_SILVER,
-            GatheringType.OM_GATHER_TREA_GOLD,
-        };
-
-        public static bool IsChest(this GatheringType gatheringType)
-        {
-            return ChestType.Contains(gatheringType);
-        }
-
         private static List<GatheringType> LockedChestType = new()
         {
             GatheringType.OM_GATHER_KEY_LV1,
@@ -78,33 +235,6 @@ namespace Arrowgene.Ddon.Shared.Model
         public static bool IsLockedChest(this GatheringType gatheringType)
         {
             return LockedChestType.Contains(gatheringType);
-        }
-
-        private static Dictionary<GatheringType, int> ChestRank = new()
-        {
-            [GatheringType.OM_GATHER_NONE] = 1,
-            [GatheringType.OM_GATHER_TREA_OLD] = 1,
-            [GatheringType.OM_GATHER_TREA_TREE] = 2,
-            [GatheringType.OM_GATHER_SHIP] = 2,
-            [GatheringType.OM_GATHER_KEY_LV1] = 3,
-            [GatheringType.OM_GATHER_TREA_IRON] = 4,
-            [GatheringType.OM_GATHER_KEY_LV2] = 5,
-            [GatheringType.OM_GATHER_KEY_LV3] = 6,
-            [GatheringType.OM_GATHER_KEY_LV4] = 7,
-            [GatheringType.OM_GATHER_TREA_SILVER] = 8,
-            [GatheringType.OM_GATHER_TREA_GOLD] = 9,
-        };
-
-        public const int MIN_TYPE_RANK = 1;
-        public const int MAX_TYPE_RANK = 9;
-
-        public static int GetChestRank(this GatheringType gatheringType)
-        {
-            if (!ChestRank.ContainsKey(gatheringType))
-            {
-                return 1;
-            }
-            return ChestRank[gatheringType];
         }
     }
 }

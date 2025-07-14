@@ -25,7 +25,8 @@ namespace Arrowgene.Ddon.GameServer.GatheringItems
             {
                 new EnemyDropTableDropGenerator(),
                 new EnemyEpitaphRoadDropGenerator(server),
-                new EnemyEventDropGenerator(server)
+                new EnemyEventDropGenerator(server),
+                new EnemyDropGenerator(server),
             };
         }
 

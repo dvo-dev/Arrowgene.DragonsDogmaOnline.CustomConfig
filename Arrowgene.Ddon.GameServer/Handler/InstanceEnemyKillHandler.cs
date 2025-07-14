@@ -140,6 +140,14 @@ namespace Arrowgene.Ddon.GameServer.Handler
                             LayoutId = boss.StageLayoutId.ToCDataStageLayoutId(),
                         }, queuedPackets);
                     }
+
+                    if (isAreaBoss && client.GameMode == GameMode.Normal)
+                    {
+                        foreach (var memberClient in client.Party.Clients)
+                        {
+                            queuedPackets.AddRange(Server.AreaRankManager.AddAreaPoint(memberClient, client.Character.AreaId, (Server.GameSettings.GameServerSettings.AreaBossApReward, 0), connectionIn));
+                        }
+                    }
                 }
 
                 if (!packet.IsNoBattleReward && !client.QuestState.IsQuestActive(QuestId.ResolutionsAndOmens))

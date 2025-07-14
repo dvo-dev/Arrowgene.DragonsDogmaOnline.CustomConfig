@@ -35,7 +35,7 @@ namespace Arrowgene.Ddon.Shared.AssetReader
                         GroupNo = jGroup.GetProperty("GroupNo").GetUInt32(),
                         PosId = jGroup.GetProperty("PosId").GetUInt32(),
                         GatheringType = (GatheringType) jGroup.GetProperty("GatheringType").GetUInt32(),
-                        UintId = jGroup.GetProperty("UnitId").GetUInt32(),
+                        UnitId = (OmGatheringPoint) jGroup.GetProperty("UnitId").GetUInt32(),
                         Position = (
                             jGroup.GetProperty("Position").GetProperty("x").GetDouble(),
                             jGroup.GetProperty("Position").GetProperty("y").GetDouble(),

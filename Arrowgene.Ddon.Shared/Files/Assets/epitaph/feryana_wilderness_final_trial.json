@@ -44,56 +44,80 @@
                             "enemy_id": "0x010309",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 30,
+                            "is_required": false
                         },
                         {
                             "comment": "Skeleton Sorcerer",
                             "enemy_id": "0x010309",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 30,
+                            "is_required": false
                         },
                         {
                             "comment": "Skeleton Sorcerer",
                             "enemy_id": "0x010309",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 30,
+                            "is_required": false
                         },
                         {
                             "comment": "Skeleton Sorcerer",
                             "enemy_id": "0x010309",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 30,
+                            "is_required": false
                         },
                         {
                             "comment": "Skeleton Warg",
                             "enemy_id": "0x010221",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 60,
+                            "is_required": false
                         },
                         {
                             "comment": "Skeleton Warg",
                             "enemy_id": "0x010221",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 60,
+                            "is_required": false
                         },
                         {
                             "comment": "Skeleton Warg",
                             "enemy_id": "0x010221",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 60,
+                            "is_required": false
                         },
                         {
                             "comment": "Skeleton Warg",
                             "enemy_id": "0x010221",
                             "level": 90,
                             "exp_scheme": "Automatic",
-                            "named_enemy_params_id": 2286
+                            "named_enemy_params_id": 2286,
+                            "repop_count": 50,
+                            "repop_wait_second": 60,
+                            "is_required": false
                         }
                     ]
                 }

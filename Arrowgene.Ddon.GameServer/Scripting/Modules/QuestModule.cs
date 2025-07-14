@@ -11,14 +11,9 @@ namespace Arrowgene.Ddon.GameServer.Scripting
         public override bool ScanSubdirectories => true;
         public override bool EnableHotLoad => true;
 
-        // Contains a list of scripts which are interfaces or abstract classes
-        // and doesn't attempt to compile them as a quest object
-        private HashSet<string> IgnoredScripts = [
-            "EmblemTrial.csx"
-        ];
-
         public QuestModule()
         {
+            IgnoredScripts.Add("EmblemTrial.csx");
         }
 
         public override bool EvaluateResult(string path, object result, IDictionary<string, object> variables)
